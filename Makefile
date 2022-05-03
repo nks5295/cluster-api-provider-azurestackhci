@@ -51,11 +51,11 @@ ETCD=$(TOOLS_BIN_DIR)/etcd
 GO_INSTALL = ./scripts/go_install.sh
 
 # Binaries.
-CONTROLLER_GEN_VER := v0.6.1
+CONTROLLER_GEN_VER := v0.8.0
 CONTROLLER_GEN_BIN := controller-gen
 CONTROLLER_GEN := $(TOOLS_BIN_DIR)/$(CONTROLLER_GEN_BIN)-$(CONTROLLER_GEN_VER)
 
-CONVERSION_GEN_VER := v0.20.2
+CONVERSION_GEN_VER := v0.23.6
 CONVERSION_GEN_BIN := conversion-gen
 CONVERSION_GEN := $(TOOLS_BIN_DIR)/$(CONVERSION_GEN_BIN)-$(CONVERSION_GEN_VER)
 
@@ -64,7 +64,7 @@ GOLANGCI_LINT_VER := v1.41.1
 GOLANGCI_LINT_BIN := golangci-lint
 GOLANGCI_LINT := $(TOOLS_BIN_DIR)/$(GOLANGCI_LINT_BIN)-$(GOLANGCI_LINT_VER)
 
-KUSTOMIZE_VER := v4.1.3
+KUSTOMIZE_VER := v4.5.2
 KUSTOMIZE_BIN := kustomize
 KUSTOMIZE := $(TOOLS_BIN_DIR)/$(KUSTOMIZE_BIN)-$(KUSTOMIZE_VER)
 
@@ -84,14 +84,14 @@ GINKGO_VER := v1.16.4
 GINKGO_BIN := ginkgo
 GINKGO := $(TOOLS_BIN_DIR)/$(GINKGO_BIN)-$(GINKGO_VER)
 
-KUBECTL_VER := v1.21.4
+KUBECTL_VER := v1.24.0
 KUBECTL_BIN := kubectl
 KUBECTL := $(TOOLS_BIN_DIR)/$(KUBECTL_BIN)-$(KUBECTL_VER)
 
 # Version
-MAJOR_VER ?= 0
-MINOR_VER ?= 4
-PATCH_VER ?= 0-alpha
+MAJOR_VER ?= 1
+MINOR_VER ?= 0
+PATCH_VER ?= 0-beta
 
 # Define Docker related variables. Releases should modify and double check these vars.
 REGISTRY ?= mocimages.azurecr.io
@@ -236,6 +236,7 @@ generate-go: $(CONTROLLER_GEN) $(MOCKGEN) $(CONVERSION_GEN) ## Runs Go related g
 
 	$(CONVERSION_GEN) \
 		--input-dirs=./api/v1alpha3 \
+		--input-dirs=./api/v1alpha4 \
 		--output-file-base=zz_generated.conversion $(OUTPUT_BASE) \
 		--go-header-file=./hack/boilerplate/boilerplate.generatego.txt
 	
@@ -352,7 +353,7 @@ release-binary: $(RELEASE_DIR)
 		-e GOARCH=$(GOARCH) \
 		-v "$$(pwd):/workspace" \
 		-w /workspace \
-		golang:1.13.8 \
+		golang:1.17.9 \
 		go build -a -ldflags '-extldflags "-static"' \
 		-o $(RELEASE_DIR)/$(notdir $(RELEASE_BINARY))-$(GOOS)-$(GOARCH) $(RELEASE_BINARY)
 
