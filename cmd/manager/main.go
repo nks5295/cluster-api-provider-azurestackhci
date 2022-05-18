@@ -244,6 +244,11 @@ func main() {
 		os.Exit(1)
 	}
 
+	if err := (&infrav1beta1.AzureStackHCIVirtualMachine{}).SetupWebhookWithManager(mgr); err != nil {
+		setupLog.Error(err, "unable to create webhook", "webhook", "AzureStackHCIVirtualMachine")
+		os.Exit(1)
+	}
+
 	if err := (&infrav1beta1.AzureStackHCILoadBalancer{}).SetupWebhookWithManager(mgr); err != nil {
 		setupLog.Error(err, "unable to create webhook", "webhook", "AzureStackHCILoadBalancer")
 		os.Exit(1)
